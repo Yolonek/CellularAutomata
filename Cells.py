@@ -28,6 +28,10 @@ class Cells:
         y = cell[1] // self.cell_size
         self.cells.add((x, y))
 
+    def add_cells(self, cells: set[tuple[int, int]]) -> None:
+        for cell in cells:
+            self.add_cell(cell)
+
     def remove_cell(self, cell: tuple[int, int]) -> None:
         x = cell[0] // self.cell_size
         y = cell[1] // self.cell_size
@@ -39,7 +43,8 @@ class Cells:
             pygame.draw.rect(self.window, cell_color, (*grid_top_left, self.cell_size, self.cell_size))
 
     def new_generation(self):
-        self.cells = evolve_grid(self.cells, self.width, self.height)
+        if self.get_number_of_cells() > 0:
+            self.cells = evolve_grid(self.cells, self.grid_width, self.grid_height)
 
     def generate_random_cells(self):
         occupied_cells = np.random.randint(self.grid_count // 10, self.grid_count // 5)
@@ -50,16 +55,32 @@ class Cells:
             )]
         )
 
+    def place_glider(self, position: tuple[int, int], direction: str = 'random'):
+        directions = ['downright', 'downleft', 'upright', 'upleft']
+        x, y = position
+        s = self.cell_size
+        direction = np.random.choice(directions) if direction == 'random' else direction
+        if direction == 'downright':
+            glider_cords = {(x, y), (x - s, y), (x - 2 * s, y - s), (x, y - s), (x, y - 2 * s)}
+        elif direction == 'downleft':
+            glider_cords = {(x, y), (x + s, y), (x + 2 * s, y - s), (x, y - s), (x, y - 2 * s)}
+        elif direction == 'upright':
+            glider_cords = {(x, y), (x, y + s), (x - s, y + 2 * s), (x - s, y), (x - 2 * s, y)}
+        else:
+            glider_cords = {(x, y), (x, y + s), (x + s, y + 2 * s), (x + s, y), (x + 2 * s, y)}
+        self.add_cells(glider_cords)
+
+
 
 @nb.njit()
 def get_all_neighbors(position: tuple[int, int], grid_width: int, grid_height: int) -> list[tuple[int, int]]:
     x, y = position
     neighbors: list[tuple[int, int]] = []
     for dx in [-1, 0, 1]:
-        if x + dx < 0 or x + dx > grid_width:
+        if x + dx < 0 or x + dx >= grid_width:
             continue
         for dy in [-1, 0, 1]:
-            if y + dy < 0 or y + dy > grid_height:
+            if y + dy < 0 or y + dy >= grid_height:
                 continue
             if dx == 0 and dy == 0:
                 continue

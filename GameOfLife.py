@@ -1,5 +1,5 @@
 import pygame
-from Cells import Cells, evolve_grid
+from Cells import Cells
 from time import time
 
 
@@ -11,6 +11,9 @@ CELL_UPDATE_FREQUENCY = 10
 FPS = 60
 CAPTION = "Cellular Automata"
 
+# Press 1 to place glider
+# press one of arrows to choose direction of the glider
+
 
 def main():
     pygame.init()
@@ -21,12 +24,13 @@ def main():
     running = True
     playing = False
     mouse_button_pressed = False
+    object_placing_mode_active = False
     count = 0
     generation_time = CELL_UPDATE_FREQUENCY / FPS
 
     cells = Cells(window, WIDTH, HEIGHT, CELL_SIZE)
-    # evolve_grid({(0, 0)}, 1, 1)
 
+    direction = 'random'
     while running:
         clock.tick(FPS)
 
@@ -48,10 +52,13 @@ def main():
 
             if event.type == pygame.MOUSEBUTTONDOWN:
                 mouse_button_pressed = True
+                if object_placing_mode_active:
+                    object_position = pygame.mouse.get_pos()
+                    cells.place_glider(object_position, direction=direction)
             elif event.type == pygame.MOUSEBUTTONUP:
                 mouse_button_pressed = False
 
-            if mouse_button_pressed:
+            if mouse_button_pressed and object_placing_mode_active is False:
                 new_cell = pygame.mouse.get_pos()
                 cells.add_cell(new_cell)
 
@@ -64,6 +71,20 @@ def main():
                     cells.clear_cells()
                 elif event.key == pygame.K_g:
                     cells.generate_random_cells()
+                elif event.key == pygame.K_1:
+                    object_placing_mode_active = not object_placing_mode_active
+                elif event.key in [pygame.K_UP, pygame.K_DOWN, pygame.K_LEFT, pygame.K_RIGHT]\
+                        and object_placing_mode_active:
+                    if event.key == pygame.K_UP:
+                        direction = 'upleft'
+                    elif event.key == pygame.K_DOWN:
+                        direction = 'downright'
+                    elif event.key == pygame.K_LEFT:
+                        direction = 'downleft'
+                    elif event.key == pygame.K_RIGHT:
+                        direction = 'upright'
+                    else:
+                        direction = 'random'
 
         window.fill(BLACK)
         cells.draw_cells(WHITE)
