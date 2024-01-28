@@ -12,7 +12,9 @@ FPS = 60
 CAPTION = "Cellular Automata"
 
 # Press 1 to place glider
-# press one of arrows to choose direction of the glider
+# press 2 to place ship
+# press 3 to place pulsar
+# press one of arrows to choose direction of the glider/ship
 
 
 def main():
@@ -24,7 +26,7 @@ def main():
     running = True
     playing = False
     mouse_button_pressed = False
-    object_placing_mode_active = False
+    object_to_place = 'square'
     count = 0
     generation_time = CELL_UPDATE_FREQUENCY / FPS
 
@@ -52,13 +54,18 @@ def main():
 
             if event.type == pygame.MOUSEBUTTONDOWN:
                 mouse_button_pressed = True
-                if object_placing_mode_active:
+                if object_to_place != 'square':
                     object_position = pygame.mouse.get_pos()
-                    cells.place_glider(object_position, direction=direction)
+                    if object_to_place == 'glider':
+                        cells.place_glider(object_position, direction=direction)
+                    elif object_to_place == 'ship':
+                        cells.place_ship(object_position, direction=direction)
+                    elif object_to_place == 'pulsar':
+                        cells.place_pulsar(object_position)
             elif event.type == pygame.MOUSEBUTTONUP:
                 mouse_button_pressed = False
 
-            if mouse_button_pressed and object_placing_mode_active is False:
+            if mouse_button_pressed and object_to_place == 'square':
                 new_cell = pygame.mouse.get_pos()
                 cells.add_cell(new_cell)
 
@@ -72,17 +79,21 @@ def main():
                 elif event.key == pygame.K_g:
                     cells.generate_random_cells()
                 elif event.key == pygame.K_1:
-                    object_placing_mode_active = not object_placing_mode_active
-                elif event.key in [pygame.K_UP, pygame.K_DOWN, pygame.K_LEFT, pygame.K_RIGHT]\
-                        and object_placing_mode_active:
+                    object_to_place = 'glider' if object_to_place != 'glider' else 'square'
+                elif event.key == pygame.K_2:
+                    object_to_place = 'ship' if object_to_place != 'ship' else 'square'
+                elif event.key == pygame.K_3:
+                    object_to_place = 'pulsar' if object_to_place != 'pulsar' else 'square'
+                elif event.key in [pygame.K_UP, pygame.K_DOWN, pygame.K_LEFT, pygame.K_RIGHT, pygame.K_RCTRL]\
+                        and object_to_place != 'square':
                     if event.key == pygame.K_UP:
-                        direction = 'upleft'
+                        direction = 'up'
                     elif event.key == pygame.K_DOWN:
-                        direction = 'downright'
+                        direction = 'down'
                     elif event.key == pygame.K_LEFT:
-                        direction = 'downleft'
+                        direction = 'left'
                     elif event.key == pygame.K_RIGHT:
-                        direction = 'upright'
+                        direction = 'right'
                     else:
                         direction = 'random'
 
