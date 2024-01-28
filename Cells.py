@@ -48,12 +48,12 @@ class Cells:
             self.cells = evolve_grid(self.cells, self.grid_width, self.grid_height)
 
     def generate_random_cells(self):
-        occupied_cells = np.random.randint(self.grid_count // 10, self.grid_count // 5)
-        self.cells = set(
-            [(x, y) for x, y in zip(
+        occupied_cells = np.random.randint(self.grid_count // 20, self.grid_count // 16)
+        self.cells.update(
+            {(x, y) for x, y in zip(
                 np.random.randint(0, self.grid_width, size=occupied_cells),
                 np.random.randint(0, self.grid_height, size=occupied_cells)
-            )]
+            )}
         )
 
     def place_glider(self, position: tuple[int, int], direction: str = 'random'):
@@ -119,6 +119,16 @@ class Cells:
                 place_element((offset1, offset2), horizontal=True)
                 place_element((offset2, offset1), horizontal=False)
         self.add_cells(pulsar_cords)
+
+    def change_cell_size(self, new_size: int):
+        self.cell_size = new_size
+        self.grid_width = self.width / new_size
+        self.grid_height = self.height / new_size
+        self.grid_count = self.grid_width * self.grid_height
+        self.filter_outer_cells()
+
+    def filter_outer_cells(self):
+        self.cells = {cell for cell in self.cells if 0 < cell[0] < self.grid_width and 0 < cell[1] < self.grid_height}
 
 
 @nb.njit()
