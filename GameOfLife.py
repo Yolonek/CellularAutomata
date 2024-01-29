@@ -5,18 +5,22 @@ from time import time
 
 BLACK = (16, 16, 16)
 WHITE = (255, 255, 255)
-WIDTH, HEIGHT = 800, 800
+WIDTH, HEIGHT = 1500, 1000
 CELL_SIZE_LIST = [1, 2, 4, 8, 10, 20]
 UPDATE_FREQUENCY_LIST = [2, 3, 5, 10, 20, 30, 60]
 FPS = 60
 CAPTION = "Conway's Game of Life"
 
-# Press 1 to place glider
-# press 2 to place ship
-# press 3 to place pulsar
-# press one of arrows to choose direction of the glider/ship
-# press P to toggle logs printing
-# press E to enter edit mode and change speed and size with arrows
+'''
+    press 1 to place glider
+    press 2 to place ship
+    press 3 to place pulsar
+    press one of arrows to choose direction of the glider/ship
+    press P to toggle logs printing
+    press E to enter edit mode and change speed and size with arrows
+    press C to clear all cells
+    press G to generate random cells
+'''
 
 
 def get_neighboring_number(current_number: int, number_list: list[int], increment: bool) -> int:
@@ -101,6 +105,7 @@ def main():
                     print_logs = not print_logs
                 elif event.key == pygame.K_e:
                     edit_mode_active = not edit_mode_active
+                    object_to_place = 'square'
                     print(f'edit_mode_active: {edit_mode_active}')
                 elif event.key == pygame.K_c:
                     cells.clear_cells()
@@ -124,7 +129,7 @@ def main():
                         elif event.key == pygame.K_LEFT:
                             direction = 'left' if direction != 'left' else 'random'
                         elif event.key == pygame.K_RIGHT:
-                            direction = 'right' if direction == 'right' else 'random'
+                            direction = 'right' if direction != 'right' else 'random'
                         else:
                             direction = 'random'
                     if edit_mode_active and object_to_place == 'square':

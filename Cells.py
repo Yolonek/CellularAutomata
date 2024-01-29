@@ -48,7 +48,7 @@ class Cells:
             self.cells = evolve_grid(self.cells, self.grid_width, self.grid_height)
 
     def generate_random_cells(self):
-        occupied_cells = np.random.randint(self.grid_count // 20, self.grid_count // 16)
+        occupied_cells = np.random.randint(self.grid_count // 40, self.grid_count // 30)
         self.cells.update(
             {(x, y) for x, y in zip(
                 np.random.randint(0, self.grid_width, size=occupied_cells),
