@@ -32,6 +32,13 @@ class CellularAutomata:
     def change_boundary_conditions(self, boundary_conditions: str):
         self.boundary_conditions = boundary_conditions
 
+    def change_grid_size(self, L: int) -> None:
+        if self._step == 0:
+            self.L = L
+            self.grid = np.zeros(self.L, dtype=np.int8)[None, :]
+        else:
+            raise ValueError(f'Ongoing simulation. Use reset_simulation() first.')
+
     def reset_simulation(self) -> None:
         self._step = 0
         self.grid = np.zeros(self.L, dtype=np.int8)[None, :]
@@ -48,16 +55,16 @@ class CellularAutomata:
             proximity_right = (array[-2], array[-1], array[0])
         elif self.boundary_conditions == 'reflective':
             proximity_left = (array[1], array[0], array[1])
-            proximity_right = (array[-2], array[0], array[-2])
+            proximity_right = (array[-2], array[-1], array[-2])
         elif self.boundary_conditions == 'constant':
             proximity_left = (1, array[0], array[1])
             proximity_right = (array[-2], array[-1], 1)
         elif self.boundary_conditions == 'null':
             proximity_left = (0, array[0], array[1])
             proximity_right = (array[-2], array[-1], 0)
-        elif self.boundary_conditions == 'random':
-            proximity_left = (np.random.choice([1, 2]), array[0], array[1])
-            proximity_right = (array[-2], array[-1], np.random.random([1, 2]))
+        elif self.boundary_conditions == 'opposite':
+            proximity_left = (0, array[0], array[1])
+            proximity_right = (array[-2], array[-1], 1)
         else:
             raise ValueError('Invalid boundary conditions.')
         return proximity_left, proximity_right
@@ -79,9 +86,7 @@ class CellularAutomata:
         self.grid = np.concatenate((self.grid, new_generation[None, :]), axis=0)
         self._step += 1
 
-    def simulation(self, steps: int, reset: bool = True) -> None:
-        if reset:
-            self.reset_simulation()
+    def simulation(self, steps: int) -> None:
         for _ in range(steps):
             self.simulation_step()
 
@@ -92,8 +97,8 @@ class CellularAutomata:
         axes.set(xticks=[], yticks=[])
         if add_title:
             title = (f'Cellular Automata for rule {self.rule}\n'
-                     f'Evolution for {self._step} steps')
-            axes.add_title(title)
+                     f'Evolution for {self._step} steps, L = {self.L}')
+            axes.set_title(title)
 
 
 if __name__ == '__main__':
