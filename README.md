@@ -28,18 +28,34 @@ you need to press the number corresponding to an active object again.
 * The direction of a movable object can be changed by pressing of four arrows. 
 To go back to random direction you need to press the active direction again.
 
+The code containing cells and calculating their interactions is written in file `Cells.py`.
+
 ### Animations
-![](animations/random.gif)
 
-![](animations/square.gif)
+![](animations/squarenobg.gif)
 
-![](animations/glider.gif)
+![](animations/glidernobg.gif)
 
-![](animations/ship.gif)
+![](animations/shipnobg.gif)
 
-![](animations/zoomout1.gif)
+![](animations/randomnobg.gif)
 
-![](animations/zoomout2.gif)
+![](animations/zoomout1nobg.gif)
+
+![](animations/zoomout2nobg.gif)
 
 
+# Cellular Automata
+
+The second part of the project explores cellular automata in general.
+They are mathematical models that evolve over time based on local rules encoded in a binary number.
+The file `CellularAutomata.py` contains all code necessary for calculations and
+its use case is presented in the Jupyter notebook `CellularAutomata.ipynb` file.
+
+### Images
+
+![](images/cellular_automata.png)
+![](images/automata_boundary_conditions.png)
+![](images/cellular_automata_boundary_rule30.png)
+![](images/cellular_automata_evo_rule61.png)
 
