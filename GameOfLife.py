@@ -5,7 +5,7 @@ from time import time
 
 BLACK = (16, 16, 16)
 WHITE = (255, 255, 255)
-WIDTH, HEIGHT = 1500, 1000
+WIDTH, HEIGHT = 8 * 192, 8 * 108
 CELL_SIZE_LIST = [1, 2, 4, 8, 10, 20]
 UPDATE_FREQUENCY_LIST = [2, 3, 5, 10, 20, 30, 60]
 FPS = 60
@@ -52,7 +52,7 @@ def main():
     object_to_place = 'square'
     count = 0
     current_cell_size = CELL_SIZE_LIST[-1]
-    current_update_frequency = UPDATE_FREQUENCY_LIST[-1]
+    current_update_frequency = UPDATE_FREQUENCY_LIST[0]
     generation_time = current_update_frequency / FPS
 
     cells = Cells(window, WIDTH, HEIGHT, current_cell_size)
@@ -150,7 +150,7 @@ def main():
                             )
                             generation_time = current_update_frequency / FPS
                         print(f'current cell size: {current_cell_size}\n'
-                              f'current generation time: {generation_time}')
+                              f'current generation time: {generation_time:.4f}')
 
         window.fill(BLACK)
         cells.draw_cells(WHITE)
